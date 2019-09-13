@@ -1,0 +1,15 @@
+{
+    "name": "B站动态提醒",
+    "version": "2233",
+    "manifest_version": 2,
+    "background":
+    {
+        "scripts": ["bg.js"]
+    },
+    "permissions":
+    [
+        "notifications",
+        "http://*.bilibili.com/*",
+        "https://*.bilibili.com/*"
+    ]
+}
