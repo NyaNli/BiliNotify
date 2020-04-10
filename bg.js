@@ -3,6 +3,7 @@ var lastid = localStorage.getItem('lastid');
 var type = 0xFFFFFFF;
 
 var live = new Map();
+var liveretry = 0;
 var tmpmap = new Map();
 
 var timer = null;
@@ -32,6 +33,8 @@ function loadMsg() {
             if (data.data.update_num == 0)
                 return;
             var cards = data.data.cards;
+            if (cards == null)
+                return;
             for (var i = data.data.update_num > cards.length ? cards.length-1 : data.data.update_num-1; i >= 0; i--) {
                 var _type = cards[i].desc.type;
                 if (_type == 1) {
@@ -62,7 +65,9 @@ function loadMsg() {
                         sendNotify(origin_card.apiSeasonInfo.title, "转发自 " + card.user.uname + "\n" + card.item.content, card.user.face, origin_card.url);
                     }
                 } else if (_type == 8) {
+                    var desc = cards[i].desc;
                     var card = JSON.parse(cards[i].card);
+                    var display = cards[i].display;
                     // var options={
                     //     dir: "ltr",
                     //     lang: "utf-8",
@@ -72,7 +77,7 @@ function loadMsg() {
                     // };
                     // var n = new Notification(card.title, options);
                     // n.addEventListener('click', onNotifyClick);
-                    sendNotify(card.title, card.owner.name, card.pic, "https://www.bilibili.com/video/av" + card.aid);
+                    sendNotify(card.title, desc.user_profile.info.uname + " " + display.usr_action_txt, card.pic, "https://www.bilibili.com/video/av" + card.aid);
                 } else if (_type == 512) {
                     var card = JSON.parse(cards[i].card);
                     // var options={
@@ -183,7 +188,7 @@ function loadLive(page) {
             return;
         }
         for (var i = 0; i < list.length; i++) {
-            tmpmap.set(list[i].roomid, list[i]);
+            tmpmap.set(list[i].roomid+list[i].title, list[i]);
         }
         loadLive(page+1);
     });
